@@ -1,0 +1,13 @@
+# STAGE ?= <stage>
+# SERVICE_NAME ?= <service-name>
+# AKS_RESOURCE_GROUP ?= <resource-group>
+# AKS_CLUSTER_NAME ?= <cluster-name>
+# REGISTRY_URL ?= <registry-url>
+# AZ_ACR_REPO_NAME ?= <repo-name>
+
+STAGE ?= mystage
+SERVICE_NAME ?= myservice-name
+AKS_RESOURCE_GROUP ?= myresource-group
+AKS_CLUSTER_NAME ?= mycluster-name
+REGISTRY_URL ?= myregistry-url
+AZ_ACR_REPO_NAME ?= myrepo-name

@@ -1,0 +1,22 @@
+export GIT_COMMIT ?= $(shell cut -c-8 <<< `git rev-parse HEAD`)
+export BRANCH ?= $(shell git rev-parse --abbrev-ref HEAD)
+
+export DOCKER_BUILD_FLAGS ?= --no-cache
+export DOCKER_BUILD_PATH ?= $(APP_ROOT)
+export DOCKER_FILE ?= $(APP_ROOT)/Dockerfile
+
+export TARGET_IMAGE ?= $(REGISTRY_URL)/$(AZ_ACR_REPO_NAME)/$(SERVICE_NAME)
+export TARGET_IMAGE_LATEST ?= $(TARGET_IMAGE):$(BRANCH)-$(GIT_COMMIT)
+
+acr-docker-login: # acr-docker-login
+	echo az acr login --name $(AZ_ACR_REPO_NAME)
+
+docker-build: # docker-build
+	echo docker build $(DOCKER_BUILD_FLAGS) -t $(SERVICE_NAME) -f $(DOCKER_FILE) $(DOCKER_BUILD_PATH)
+
+docker-tag: # docker-tag
+	echo docker tag $(SERVICE_NAME) $(TARGET_IMAGE_LATEST)
+
+docker-push: acr-docker-login # docker-push
+	echo docker push $(TARGET_IMAGE_LATEST)
+

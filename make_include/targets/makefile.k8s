@@ -1,0 +1,23 @@
+export OVERLAY_PATH ?= $(APP_ROOT)/k8s/overlays/$(STAGE)/
+
+define kustomize-image-edit
+	echo cd $(OVERLAY_PATH) && kustomize edit set image api=$(1) && \
+	cd $(APP_ROOT)
+endef
+
+kubectl-apply: # kubectl-apply
+	echo kustomize build $(OVERLAY_PATH)
+	echo kustomize build $(OVERLAY_PATH) | kubectl apply -f -
+
+update-kubeconfig: # update-kubeconfig
+	echo az aks get-credentials --resource-group $(AKS_RESOURCE_GROUP) --name $(AKS_CLUSTER_NAME)
+
+aks-deploy: update-kubeconfig # aks-deploy
+	echo $(call kustomize-image-edit,$(TARGET_IMAGE_LATEST))
+	echo make kubectl-apply
+
+aks-delete: update-kubeconfig # aks-delete
+	echo kubectl delete namespace $(STAGE)-api
+
+kustomize-edit: # kustomize-edit
+	echo $(call kustomize-image-edit,$(TARGET_IMAGE_LATEST))
